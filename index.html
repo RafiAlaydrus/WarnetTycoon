@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Warnet">
+<meta name="theme-color" content="#0f131b">
+<meta name="format-detection" content="telephone=no">
+<title>Warnet Tycoon</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="boot" role="status"><span>Opening the shop…</span></div>
+<noscript><p class="nojs">Warnet Tycoon needs JavaScript turned on.</p></noscript>
+
+<div id="app" hidden>
+  <header id="hud">
+    <div class="hud-row">
+      <output id="money" class="money" aria-label="Cash">Rp 50.000</output>
+      <span id="clock" class="clock">Day 1 · 08:00</span>
+    </div>
+    <div class="hud-row">
+      <span id="perMin" class="sub">+Rp 0/min</span>
+      <span class="rep" id="rep" role="img" aria-label="Reputation 2.5 of 5">
+        <span class="stars" id="stars"><i></i><i></i><i></i><i></i><i></i></span>
+        <span id="repNum" class="sub">2.5</span>
+        <span id="sign" class="sign">Open</span>
+      </span>
+    </div>
+    <div class="hud-meters">
+      <button class="meter" id="bwBtn" type="button" data-go="upgrades" aria-label="Internet load. Opens Upgrades">
+        <span class="m-t"><span>Net</span><span id="bwVal"></span></span>
+        <span class="m-bar"><i id="bwFill"></i></span>
+      </button>
+      <button class="meter" id="heatBtn" type="button" data-go="upgrades" aria-label="Room heat. Opens Upgrades">
+        <span class="m-t"><span>Heat</span><span id="heatVal"></span></span>
+        <span class="m-bar"><i id="heatFill"></i></span>
+      </button>
+    </div>
+    <button id="dbgCash" class="dbg" type="button" hidden>+Rp 1M</button>
+  </header>
+
+  <main id="views">
+    <section class="view" id="v-shop" aria-label="Shop">
+      <div class="card rate">
+        <div class="rate-head">
+          <label for="rate">Billing rate</label>
+          <output id="rateOut" for="rate">Rp 4.000/h</output>
+        </div>
+        <div class="rate-ctl">
+          <button id="rateDn" class="step" type="button" aria-label="Lower the rate">−</button>
+          <input id="rate" type="range" min="1500" max="12000" step="500" value="4000">
+          <button id="rateUp" class="step" type="button" aria-label="Raise the rate">+</button>
+        </div>
+        <p id="rateHint" class="hint"></p>
+      </div>
+      <div id="evBanner" hidden></div>
+      <div class="door">
+        <div class="awning" aria-hidden="true"></div>
+        <div class="door-row"><span>Door</span><span id="qCount"></span></div>
+        <div id="queue" class="queue"></div>
+      </div>
+      <div id="floor" class="floor"></div>
+      <p id="shopStats" class="hint"></p>
+    </section>
+
+    <section class="view" id="v-pcs" aria-label="PCs" hidden>
+      <h2>PCs</h2>
+      <p class="hint">Only gamers and streamers pay a tier's full rate multiplier. Everyone else pays at most x1. Tap a desk on the Shop screen to upgrade it.</p>
+      <ul class="list" id="l-pcs"></ul>
+    </section>
+    <section class="view" id="v-upgrades" aria-label="Upgrades" hidden>
+      <h2>Upgrades</h2>
+      <ul class="list" id="l-upgrades"></ul>
+    </section>
+    <section class="view" id="v-staff" aria-label="Staff" hidden>
+      <h2>Staff</h2>
+      <p class="hint" id="staffHint"></p>
+      <ul class="list" id="l-staff"></ul>
+    </section>
+    <section class="view" id="v-snacks" aria-label="Snacks" hidden>
+      <h2>Snacks</h2>
+      <p class="hint" id="snackHint"></p>
+      <ul class="list" id="l-snacks"></ul>
+    </section>
+    <section class="view" id="v-cabang" aria-label="Cabang" hidden>
+      <h2>Cabang</h2>
+      <ul class="list" id="l-cabang"></ul>
+      <h2 class="h-sub">Achievements <span id="achCount" class="sub"></span></h2>
+      <ul class="list" id="l-ach"></ul>
+    </section>
+  </main>
+
+  <nav id="tabs" aria-label="Sections">
+    <button class="tab" type="button" data-tab="shop" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 3h17.6l1.2 6H2z"/><path fill-rule="evenodd" d="M4 11h16v9H4zM10 14v6h4v-6z"/></svg><span>Shop</span>
+    </button>
+    <button class="tab" type="button" data-tab="pcs">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M3 4h18v12H3zM5 6v8h14V6z"/><path d="M10 17h4v2h3v2H7v-2h3z"/></svg><span>PCs</span><i class="dot" hidden></i>
+    </button>
+    <button class="tab" type="button" data-tab="upgrades">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7.5 8.5H15V17H9v-6.5H4.5z"/><path d="M6 19.5h12V22H6z"/></svg><span>Upgrades</span><i class="dot" hidden></i>
+    </button>
+    <button class="tab" type="button" data-tab="staff">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c0-4.6 3.8-7.2 8.5-7.2s8.5 2.6 8.5 7.2z"/></svg><span>Staff</span><i class="dot" hidden></i>
+    </button>
+    <button class="tab" type="button" data-tab="snacks">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 8.5c-1.6-1.6 1.6-2.6 0-4.5M12 8.5c-1.6-1.6 1.6-2.6 0-4.5M16 8.5c-1.6-1.6 1.6-2.6 0-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Snacks</span><i class="dot" hidden></i>
+    </button>
+    <button class="tab" type="button" data-tab="cabang">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2.8"/><circle cx="6" cy="19" r="2.8"/><circle cx="18" cy="9" r="2.8"/><path d="M6 7.8v8.4M6 14c0-4 12-1.5 12-5.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Cabang</span><i class="dot" hidden></i>
+    </button>
+    <button class="tab" type="button" id="gear" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.6" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="12" cy="12" r="8.9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-dasharray="3.5 3.5"/></svg><span>Settings</span>
+    </button>
+  </nav>
+
+  <div id="toasts" role="status" aria-live="polite"></div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle"></dialog>
+<script src="game.js"></script>
+</body>
+</html>
